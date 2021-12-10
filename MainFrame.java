@@ -134,6 +134,87 @@ public class MainFrame extends JFrame{
         aboutProgram = referenceMenu.add(aboutProgramAction);
         aboutProgram.setEnabled(true);
 
+        JLabel labelForFrom = new JLabel("X изменяется на интервале от:");
+        textFieldFrom = new JTextField("0.0", 10);
+        textFieldFrom.setMaximumSize(textFieldFrom.getPreferredSize());
+        JLabel labelForTo = new JLabel("до:");
+        textFieldTo = new JTextField("1.0", 10);
+        textFieldTo.setMaximumSize(textFieldTo.getPreferredSize());
+        JLabel labelForStep = new JLabel("с шагом:");
+        textFieldStep = new JTextField("0.1", 10);
+        textFieldStep.setMaximumSize(textFieldStep.getPreferredSize());
+        Box hboxRange = Box.createHorizontalBox();
+        hboxRange.setBorder(BorderFactory.createBevelBorder(1));
+        hboxRange.add(Box.createHorizontalGlue());
+        hboxRange.add(labelForFrom);
+        hboxRange.add(Box.createHorizontalStrut(10));
+        hboxRange.add(textFieldFrom);
+        hboxRange.add(Box.createHorizontalStrut(20));
+        hboxRange.add(labelForTo);
+        hboxRange.add(Box.createHorizontalStrut(10));
+        hboxRange.add(textFieldTo);
+        hboxRange.add(Box.createHorizontalStrut(20));
+        hboxRange.add(labelForStep);
+        hboxRange.add(Box.createHorizontalStrut(10));
+        hboxRange.add(textFieldStep);
+        hboxRange.add(Box.createHorizontalGlue());
+        hboxRange.setPreferredSize(new Dimension(Double.valueOf(hboxRange.getMaximumSize().getWidth()).intValue(),
+                Double.valueOf(hboxRange.getMinimumSize().getHeight()).intValue()*2));
+        getContentPane().add(hboxRange, BorderLayout.SOUTH);
+        JButton buttonCalc = new JButton("Вычислить");
+        buttonCalc.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                try {
+                    Double from =
+                            Double.parseDouble(textFieldFrom.getText());
+                    Double to =
+                            Double.parseDouble(textFieldTo.getText());
+                    Double step =
+                            Double.parseDouble(textFieldStep.getText());
+                    data = new GornerTableModel(from, to, step,
+                            MainFrame.this.coefficients);
+                    JTable table = new JTable(data);
+                    table.setDefaultRenderer(Double.class, renderer);
+                    table.setRowHeight(30);
+                    hBoxResult.removeAll();
+                    hBoxResult.add(new JScrollPane(table));
+                    getContentPane().validate();
+                    saveToTextMenuItem.setEnabled(true);
+                    saveToGraphicsMenuItem.setEnabled(true);
+                    searchValueMenuItem.setEnabled(true);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                            "Ошибка в формате записи числа с плавающей точкой", "Ошибочный формат числа",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+        JButton buttonReset = new JButton("Очистить поля");
+        buttonReset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                textFieldFrom.setText("0.0");
+                textFieldTo.setText("1.0");
+                textFieldStep.setText("0.1");
+                hBoxResult.removeAll();
+                hBoxResult.add(new JPanel());
+                saveToTextMenuItem.setEnabled(false);
+                saveToGraphicsMenuItem.setEnabled(false);
+                searchValueMenuItem.setEnabled(false);
+                getContentPane().validate();
+            }
+        });
+        Box hboxButtons = Box.createHorizontalBox();
+        hboxButtons.setBorder(BorderFactory.createBevelBorder(1));
+        hboxButtons.add(Box.createHorizontalGlue());
+        hboxButtons.add(buttonCalc);
+        hboxButtons.add(Box.createHorizontalStrut(30));
+        hboxButtons.add(buttonReset);
+        hboxButtons.add(Box.createHorizontalGlue());
+        hboxButtons.setPreferredSize(new Dimension(Double.valueOf(hboxButtons.getMaximumSize().getWidth()).intValue(), Double.valueOf(hboxButtons.getMinimumSize().getHeight()).intValue()*2));
+        getContentPane().add(hboxButtons, BorderLayout.NORTH);
+        hBoxResult = Box.createHorizontalBox();
+        hBoxResult.add(new JPanel());
+        getContentPane().add(hBoxResult, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
