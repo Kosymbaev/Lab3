@@ -19,11 +19,36 @@ public class GornerTableCellRenderer implements TableCellRenderer {
     private DecimalFormat formatter = (DecimalFormat)NumberFormat.getInstance();
 
     public GornerTableCellRenderer() {
+        formatter.setMaximumFractionDigits(5);
+        formatter.setGroupingUsed(false);
+        DecimalFormatSymbols dottedDouble =
+                formatter.getDecimalFormatSymbols();
+        dottedDouble.setDecimalSeparator('.');
 
+        formatter.setDecimalFormatSymbols(dottedDouble);
+        panel.add(label);
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     }
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         String formattedDouble = formatter.format(value);
 
+        label.setText(formattedDouble);
+        System.out.println(value);
+        double num = Double.valueOf(formattedDouble);
+        int f = (int) num;
+        boolean t = false;
+        num = num - f;
+        num*=1000;
+        f=(int)num;
+        num-=f;
+        if (num==0) t =true;
+
+        if ((col==1 || col==0) && needle!=null && needle.equals(formattedDouble)) {
+            panel.setBackground(Color.RED);
+        } else if(t == true && col == 1){
+            panel.setBackground(Color.BLUE);
+            t = false;
+        }else panel.setBackground(Color.white);
         return panel;
     }
     public void setNeedle(String needle) {
